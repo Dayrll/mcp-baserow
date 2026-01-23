@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "baserow": {
+      "command": "node",
+      "args": [
+        "dist/index.js"
+      ]
+    }
+  }
+}

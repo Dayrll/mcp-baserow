@@ -101,6 +101,49 @@ export interface CreateTableParams {
   database_id: number;
 }
 
+export interface CreateFieldParams {
+  table_id: number;
+  type: string;
+  name: string;
+  description?: string;
+  text_default?: string;
+  boolean_default?: boolean;
+  number_default?: number | null;
+  number_decimal_places?: number;
+  number_negative?: boolean;
+  number_prefix?: string;
+  number_suffix?: string;
+  number_separator?: string;
+  date_format?: string;
+  date_include_time?: boolean;
+  date_time_format?: string;
+  date_show_tzinfo?: boolean;
+  date_force_timezone?: string | null;
+  select_options?: Array<{
+    id?: number;
+    value: string;
+    color: string;
+  }>;
+  through_field_id?: number;
+  target_field_id?: number;
+  link_row_table_id?: number;
+  [key: string]: any; // Allow any field-type specific properties
+}
+
+export interface UpdateFieldParams {
+  table_id: number;
+  field_id: number;
+  type?: string;
+  name?: string;
+  description?: string;
+  [key: string]: any; // Allow any field-type specific properties
+}
+
+export interface DeleteFieldParams {
+  table_id: number;
+  field_id: number;
+}
+
 export interface CreateRowParams {
   table_id: number;
   data: Record<string, any>;

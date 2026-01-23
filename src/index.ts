@@ -32,6 +32,10 @@ import {
   handleAuthTools,
   getAuthToolSchemas
 } from './tools/auth.js';
+import {
+  handleFieldTools,
+  getFieldToolSchemas
+} from './tools/field.js';
 
 // Load environment variables
 dotenv.config();
@@ -128,6 +132,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
     ...getDatabaseToolSchemas(),
     // Table tools
     ...getTableToolSchemas(),
+    // Field tools
+    ...getFieldToolSchemas(),
     // Row tools
     ...getRowToolSchemas()
   ];
@@ -186,6 +192,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     // Table tools
     if (name.startsWith('baserow_') && name.includes('table')) {
       return await handleTableTools(baserowClient, name, args);
+    }
+
+    // Field tools
+    if (name.startsWith('baserow_') && name.includes('field')) {
+      return await handleFieldTools(baserowClient, name, args);
     }
 
     // Row tools

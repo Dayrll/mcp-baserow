@@ -186,6 +186,58 @@ export function getRowToolSchemas(): Tool[] {
   ];
 }
 
+function formatResponse(result: any, toolName: string): string {
+  // For list_rows, provide a smarter format with summary + sample data
+  if (toolName === 'baserow_list_rows' && result.results) {
+    const summary = {
+      count: result.count,
+      next: result.next,
+      previous: result.previous,
+      total_rows: result.results.length,
+      first_row_sample: result.results.length > 0 ? result.results[0] : null
+    };
+
+    // If there are many rows, show summary + first few rows
+    if (result.results.length > 5) {
+      return JSON.stringify({
+        summary,
+        first_5_rows: result.results.slice(0, 5),
+        remaining_rows_count: result.results.length - 5,
+        note: `Showing first 5 of ${result.results.length} rows. Full data available in result.`
+      }, null, 2);
+    }
+
+    // For smaller result sets, show everything
+    return JSON.stringify(result, null, 2);
+  }
+
+  // For batch operations, provide summary
+  if (toolName === 'baserow_batch_create_rows' && Array.isArray(result)) {
+    if (result.length > 10) {
+      return JSON.stringify({
+        total_created: result.length,
+        first_5_rows: result.slice(0, 5),
+        remaining_count: result.length - 5,
+        note: `Created ${result.length} rows. Showing first 5.`
+      }, null, 2);
+    }
+  }
+
+  if (toolName === 'baserow_batch_update_rows' && Array.isArray(result)) {
+    if (result.length > 10) {
+      return JSON.stringify({
+        total_updated: result.length,
+        first_5_rows: result.slice(0, 5),
+        remaining_count: result.length - 5,
+        note: `Updated ${result.length} rows. Showing first 5.`
+      }, null, 2);
+    }
+  }
+
+  // For all other cases, return full result
+  return JSON.stringify(result, null, 2);
+}
+
 export async function handleRowTools(
   client: BaserowClient,
   toolName: string,
@@ -287,7 +339,7 @@ export async function handleRowTools(
     content: [
       {
         type: 'text',
-        text: JSON.stringify(result, null, 2)
+        text: formatResponse(result, toolName)
       }
     ]
   };

@@ -17,7 +17,9 @@ import {
   UpdateRowParams,
   BatchCreateRowsParams,
   BatchUpdateRowsParams,
-  BatchDeleteRowsParams
+  BatchDeleteRowsParams,
+  CreateFieldParams,
+  UpdateFieldParams
 } from './types/baserow';
 import { AuthManager } from './auth-manager.js';
 
@@ -47,9 +49,35 @@ export class BaserowClient {
       (error) => Promise.reject(error)
     );
 
+    // Add response interceptor to handle 401 errors (expired tokens)
     this.axios.interceptors.response.use(
       response => response,
-      this.handleError
+      async (error) => {
+        const originalRequest = error.config;
+
+        // If we get a 401 and haven't already retried this request
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+
+          try {
+            // Try to refresh the token
+            await this.authManager.forceRefresh();
+
+            // Update the authorization header with the new token
+            const authHeader = await this.authManager.getAuthHeader();
+            originalRequest.headers.Authorization = authHeader;
+
+            // Retry the original request
+            return this.axios(originalRequest);
+          } catch (refreshError) {
+            // If refresh fails, pass through to error handler
+            return this.handleError(error);
+          }
+        }
+
+        // For all other errors, use the standard error handler
+        return this.handleError(error);
+      }
     );
   }
 
@@ -133,6 +161,37 @@ export class BaserowClient {
       `/api/database/fields/table/${tableId}/`
     );
     return response.data;
+  }
+
+  async getField(tableId: number, fieldId: number): Promise<Field> {
+    const response = await this.axios.get<Field>(
+      `/api/database/fields/table/${tableId}/${fieldId}/`
+    );
+    return response.data;
+  }
+
+  async createField(params: CreateFieldParams): Promise<Field> {
+    const { table_id, ...data } = params;
+    const response = await this.axios.post<Field>(
+      `/api/database/fields/table/${table_id}/`,
+      data
+    );
+    return response.data;
+  }
+
+  async updateField(params: UpdateFieldParams): Promise<Field> {
+    const { field_id, ...data } = params;
+    const response = await this.axios.patch<Field>(
+      `/api/database/fields/${field_id}/`,
+      data
+    );
+    return response.data;
+  }
+
+  async deleteField(tableId: number, fieldId: number): Promise<void> {
+    await this.axios.delete(
+      `/api/database/fields/${fieldId}/`
+    );
   }
 
   // Row operations
