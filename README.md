@@ -198,6 +198,44 @@ Once configured, you can use natural language in your MCP client:
 - `baserow_batch_delete_rows` - Delete multiple rows
 </details>
 
+<details>
+<summary>Field Operations (3)</summary>
+
+- `baserow_create_field` - Create new field in a table
+- `baserow_update_field` - Update existing field properties
+- `baserow_delete_field` - Delete a field from a table
+</details>
+
+### Working with Formula Fields
+
+Formula fields are powerful computed fields that automatically calculate values based on other fields. They support complex expressions, conditional logic, date calculations, and more.
+
+**Quick Example - Safe Workflow Pattern:**
+
+```javascript
+// Step 1: Create field as text first (safe approach)
+"Create a text field called 'Full Name' in table 123"
+
+// Step 2: Update to formula
+"Update the field to use formula: concat(field('First Name'), ' ', field('Last Name'))"
+
+// Step 3: Test with data
+"Add a test row with First Name 'John' and Last Name 'Doe'"
+
+// Step 4: Verify it works
+"Show me the rows to verify Full Name shows 'John Doe'"
+```
+
+**Why this pattern?**
+- Field exists even if formula validation fails
+- Easy to iterate and fix errors
+- Enables thorough testing before deployment
+
+**Learn more:**
+- [Formula Fields Guide](examples/formula-fields-guide.md) - Comprehensive reference with syntax, patterns, and examples
+- [Formula Testing Workflow](examples/formula-testing-workflow.md) - Step-by-step process for safe development
+- [Formula Field Recipes](examples/formula-field-recipes.md) - Copy-paste cookbook of common patterns
+
 ## 🧪 Development
 
 ### Setup Development Environment

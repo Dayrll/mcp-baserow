@@ -36,7 +36,9 @@
       "mcp__baserow__baserow_list_rows",
       "mcp__baserow__baserow_batch_delete_rows",
       "mcp__baserow__baserow_delete_row",
-      "mcp__baserow__baserow_delete_field"
+      "mcp__baserow__baserow_delete_field",
+      "WebFetch(domain:github.com)",
+      "Bash(chmod:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
