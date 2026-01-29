@@ -2,8 +2,8 @@
 
 # Baserow MCP Server Startup Script
 
-# Set Node.js path (using nvm)
-export PATH="/Users/ayyazzafar/.nvm/versions/node/v22.11.0/bin:$PATH"
+# Set Node.js path
+export PATH="/opt/homebrew/bin:$PATH"
 
 # Get the directory where this script is located
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

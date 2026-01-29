@@ -38,7 +38,15 @@
       "mcp__baserow__baserow_delete_row",
       "mcp__baserow__baserow_delete_field",
       "WebFetch(domain:github.com)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(node --version:*)",
+      "Bash(claude mcp list:*)",
+      "Bash(claude mcp add:*)",
+      "Bash(claude auth --help:*)",
+      "Bash(claude:*)",
+      "Bash(echo:*)",
+      "Bash(source:*)",
+      "Bash(alias:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
